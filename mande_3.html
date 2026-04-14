@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mande. — Est. MMXXVI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bone:  #F2EDE3;
+  --dust:  #C9BFB0;
+  --earth: #3D3830;
+  --pitch: #1A1917;
+  --denim: #5A6880;
+  --kudzu: #5C7A4A;
+  --blood: #B8000F;
+  --gold:  #C4932A;
+  --ivory: #E8E0C8;
+  --font:  'EB Garamond', Georgia, serif;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bone);
+  color: var(--pitch);
+  cursor: none;
+  overflow-x: hidden;
+}
+
+/* CURSOR */
+.cursor {
+  position: fixed; width: 10px; height: 10px;
+  background: var(--blood); border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: width .3s, height .3s, background .3s;
+  mix-blend-mode: multiply;
+}
+.cursor.grow { width: 44px; height: 44px; background: var(--gold); }
+.cursor-ring {
+  position: fixed; width: 32px; height: 32px;
+  border: 0.5px solid rgba(26,25,23,.3); border-radius: 50%;
+  pointer-events: none; z-index: 9998;
+  transform: translate(-50%,-50%);
+}
+
+/* PAGE SYSTEM */
+.page { display: none; min-height: 100vh; }
+.page.active { display: block; animation: pageIn .6s ease forwards; }
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 200; padding: 1.6rem 2.8rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  font-size: 1.2rem; font-style: italic;
+  color: var(--pitch); text-decoration: none; cursor: none;
+  transition: color .3s;
+}
+.nav-logo .period { color: var(--gold); }
+.nav-logo.inv { color: var(--bone); }
+.nav-links { display: flex; gap: 2.8rem; list-style: none; }
+.nav-links a {
+  font-size: .7rem; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--pitch); text-decoration: none; opacity: .45;
+  transition: opacity .2s, color .3s; cursor: none;
+}
+.nav-links a:hover, .nav-links a.cur { opacity: 1; }
+.nav-links a.cur { color: var(--blood); }
+.nav-links.inv a { color: var(--bone); }
+.nav-season {
+  font-size: .7rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--pitch); opacity: .35; transition: color .3s, opacity .3s;
+}
+.nav-season.inv { color: var(--bone); opacity: .45; }
+
+/* REVEAL */
+.reveal {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity .9s ease, transform .9s ease;
+}
+.reveal.vis { opacity: 1; transform: translateY(0); }
+
+/* ══ HOME ══════════════════════════════════════════════════════ */
+
+.hero {
+  min-height: 100vh; background: var(--bone);
+  display: grid; grid-template-rows: 1fr auto;
+  position: relative; overflow: hidden;
+}
+.hero-inner {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 8rem 2.8rem 6rem; text-align: center;
+}
+.hero-correction {
+  font-size: .68rem; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--pitch); opacity: .25; margin-bottom: 2.8rem;
+  animation: fadeUp 1.2s ease both; animation-delay: .2s;
+}
+.hero-wordmark {
+  font-size: clamp(5rem, 15vw, 13rem); font-style: italic; font-weight: 400;
+  line-height: .92; color: var(--pitch); letter-spacing: -.01em;
+  animation: fadeUp 1.2s ease both; animation-delay: .4s;
+}
+.hero-wordmark .period { color: var(--gold); }
+.hero-rule {
+  width: 80%; max-width: 560px; height: .5px;
+  background: var(--pitch); opacity: .1; margin-top: 2.5rem;
+  animation: scaleX 1.4s ease both; animation-delay: .7s;
+  transform-origin: left;
+}
+.hero-scroll {
+  position: absolute; bottom: 4.5rem; left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  animation: fadeUp 1s ease both; animation-delay: 1.2s;
+}
+.hero-scroll span {
+  font-size: .62rem; letter-spacing: .18em;
+  text-transform: uppercase; opacity: .25;
+}
+.scroll-line {
+  width: .5px; height: 44px; background: var(--pitch); opacity: .18;
+  animation: scrollDrop 2.2s ease-in-out infinite;
+}
+.hero-foot {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.4rem 2.8rem; border-top: .5px solid rgba(26,25,23,.1);
+  animation: fadeUp 1s ease both; animation-delay: 1s;
+}
+.hero-foot-l { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; opacity: .3; }
+.hero-foot-r { font-size: .92rem; font-style: italic; opacity: .38; }
+
+/* MARQUEE */
+.marquee-wrap { background: var(--pitch); overflow: hidden; padding: 1rem 0; }
+.marquee-track { display: flex; white-space: nowrap; animation: marquee 32s linear infinite; }
+.mt {
+  font-size: .7rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--bone); opacity: .38; padding-right: 4rem; flex-shrink: 0;
+}
+.ms { color: var(--gold); opacity: 1; margin: 0 1.5rem; }
+
+/* NAME */
+.name-section {
+  background: var(--pitch); padding: 7rem 2.8rem;
+  display: grid; grid-template-columns: 1fr 1.5fr; gap: 6rem; align-items: center;
+}
+.name-word {
+  font-size: clamp(3.5rem, 7vw, 6.5rem); font-style: italic;
+  font-weight: 400; color: var(--bone); line-height: .95;
+}
+.name-word .period { color: var(--gold); }
+.name-phonetic {
+  font-size: .82rem; color: var(--dust); font-style: italic;
+  opacity: .4; margin-top: 1rem; letter-spacing: .06em;
+}
+.name-body {
+  font-size: 1.15rem; line-height: 1.82; color: var(--bone); opacity: .7;
+}
+.name-body em { font-style: italic; color: var(--gold); opacity: 1; }
+.name-foot {
+  margin-top: 2.5rem; padding-top: 2rem;
+  border-top: .5px solid rgba(242,237,227,.1);
+  font-size: .68rem; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--blood); opacity: .75;
+}
+
+/* COLLECTION PREVIEW */
+.coll-preview { background: var(--bone); padding: 7rem 2.8rem; }
+.sec-hdr {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  border-bottom: .5px solid rgba(26,25,23,.1); padding-bottom: 1.5rem; margin-bottom: 4rem;
+}
+.sec-ttl {
+  font-size: clamp(2.5rem, 7vw, 6rem); font-style: italic;
+  font-weight: 400; line-height: .9; color: var(--pitch);
+}
+.sec-ttl .tag { color: var(--blood); font-size: .42em; font-style: normal; vertical-align: super; letter-spacing: .1em; }
+.sec-meta { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--pitch); opacity: .3; padding-bottom: .2rem; }
+.pieces-grid { display: grid; grid-template-columns: repeat(5,1fr); }
+.piece {
+  border-right: .5px solid rgba(26,25,23,.1); padding: 2rem 1.5rem;
+  transition: background .3s; cursor: none;
+}
+.piece:last-child { border-right: none; }
+.piece:hover { background: rgba(26,25,23,.025); }
+.piece-num { font-size: .62rem; letter-spacing: .14em; color: var(--blood); opacity: .55; margin-bottom: 1.8rem; display: block; }
+.piece-img { width: 100%; aspect-ratio: 3/4; background: var(--dust); opacity: .22; margin-bottom: 1.3rem; border-radius: 2px; }
+.piece-name { font-size: 1rem; font-style: italic; color: var(--pitch); margin-bottom: .2rem; }
+.piece-detail { font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--pitch); opacity: .28; }
+.view-all-row { text-align: right; margin-top: 2.5rem; padding-top: 1.5rem; border-top: .5px solid rgba(26,25,23,.1); }
+.view-all {
+  font-size: .7rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--pitch); opacity: .38; text-decoration: none;
+  transition: opacity .2s; cursor: none;
+}
+.view-all:hover { opacity: 1; }
+
+/* DI SECTION */
+.di-section {
+  background: var(--pitch); min-height: 55vh;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 7rem 2.8rem;
+  position: relative; overflow: hidden;
+}
+.di-bg {
+  position: absolute; font-size: clamp(8rem,24vw,22rem);
+  font-style: italic; font-weight: 700; color: rgba(242,237,227,.025);
+  pointer-events: none; white-space: nowrap; user-select: none; letter-spacing: -.02em;
+}
+.di-inner { position: relative; z-index: 1; }
+.di-word {
+  font-size: 1.1rem; font-style: italic; color: var(--blood);
+  letter-spacing: .1em; margin-bottom: 1.2rem; display: block;
+  animation: pulse 3s ease-in-out infinite;
+}
+.di-main { font-size: clamp(4rem,11vw,9.5rem); font-style: italic; font-weight: 400; color: var(--bone); line-height: .9; }
+.di-rule { width: 100%; height: .5px; background: rgba(242,237,227,.12); margin: 1.8rem 0; }
+.di-est { font-size: .65rem; letter-spacing: .22em; text-transform: uppercase; color: var(--bone); opacity: .17; }
+
+/* KUDZU */
+.kudzu-section {
+  background: var(--kudzu); padding: 8rem 2.8rem;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center;
+}
+.kudzu-hl { font-size: clamp(2.5rem,5vw,4.5rem); font-style: italic; font-weight: 400; color: var(--bone); line-height: 1.1; }
+.kudzu-body { font-size: 1.1rem; line-height: 1.85; color: var(--bone); opacity: .68; }
+.kudzu-body p { margin-bottom: 1.2rem; }
+.kudzu-body p:last-child { margin-bottom: 0; }
+
+/* PALETTE STRIP */
+.palette-strip { display: flex; height: 72px; }
+.pc { flex: 1; display: flex; align-items: flex-end; padding: .5rem; transition: flex .5s ease; overflow: hidden; }
+.pc:hover { flex: 3; }
+.pc-lbl { font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; opacity: 0; white-space: nowrap; transition: opacity .3s; }
+.pc:hover .pc-lbl { opacity: 1; }
+
+/* STATEMENT BAND */
+.statement-band { background: var(--earth); padding: 5.5rem 2.8rem; text-align: center; }
+.statement-band p {
+  font-size: clamp(1.4rem,3.2vw,2.8rem); font-style: italic; font-weight: 400;
+  color: var(--bone); line-height: 1.35; max-width: 860px; margin: 0 auto; opacity: .88;
+}
+.stmt-rule { width: 40px; height: .5px; background: var(--gold); margin: 2rem auto 0; }
+
+/* ══ ABOUT ═════════════════════════════════════════════════════ */
+
+.about-wrap { background: var(--bone); padding: 10rem 2.8rem 6rem; max-width: 1300px; margin: 0 auto; }
+.about-lbl { font-size: .68rem; letter-spacing: .2em; text-transform: uppercase; color: var(--blood); margin-bottom: 2.5rem; display: block; }
+.about-hl {
+  font-size: clamp(2.2rem,5vw,4.2rem); font-style: italic; font-weight: 400;
+  line-height: 1.12; color: var(--pitch); max-width: 820px; margin-bottom: 5rem;
+}
+.about-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 5rem;
+  border-top: .5px solid rgba(26,25,23,.1); padding-top: 3.5rem;
+}
+.about-col { font-size: 1.1rem; line-height: 1.85; color: var(--earth); }
+.about-col p { margin-bottom: 1.4rem; }
+.about-col p:last-child { margin-bottom: 0; }
+.about-pull {
+  grid-column: 1/-1; border-left: 2px solid var(--kudzu);
+  padding-left: 2.5rem; margin-top: 2rem;
+}
+.about-pull p { font-size: clamp(1.2rem,2.4vw,1.9rem); font-style: italic; line-height: 1.5; color: var(--pitch); }
+
+/* CITIES */
+.cities { background: var(--earth); display: grid; grid-template-columns: repeat(3,1fr); }
+.city { padding: 4rem 2.8rem; border-right: .5px solid rgba(242,237,227,.08); text-align: center; }
+.city:last-child { border-right: none; }
+.city-name { font-size: 2.2rem; font-style: italic; color: var(--bone); display: block; margin-bottom: .6rem; }
+.city-role { font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--bone); opacity: .32; }
+
+/* PILLARS */
+.pillars-section { background: var(--pitch); padding: 8rem 2.8rem; }
+.pillars-top {
+  border-bottom: .5px solid rgba(242,237,227,.1); padding-bottom: 1.5rem;
+  margin-bottom: 4.5rem; display: flex; justify-content: space-between;
+}
+.pillars-lbl { font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--bone); opacity: .28; }
+.pillars-grid { display: grid; grid-template-columns: repeat(4,1fr); }
+.pillar { padding: 0 2.5rem 0 0; border-right: .5px solid rgba(242,237,227,.08); }
+.pillar:last-child { border-right: none; padding-right: 0; }
+.pillar-word { font-size: 2rem; font-style: italic; color: var(--bone); margin-bottom: 1.5rem; display: block; }
+.pillar-desc { font-size: 1rem; line-height: 1.8; color: var(--bone); opacity: .52; }
+
+/* GIVING */
+.giving-quiet { background: var(--bone); padding: 6rem 2.8rem; max-width: 860px; margin: 0 auto; text-align: center; }
+.giving-quiet p { font-size: 1rem; line-height: 1.8; color: var(--earth); opacity: .6; font-style: italic; }
+
+/* ══ COLLECTION ════════════════════════════════════════════════ */
+
+.coll-page { background: var(--bone); padding: 9rem 2.8rem 6rem; }
+.coll-intro {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  border-bottom: .5px solid rgba(26,25,23,.1); padding-bottom: 2rem; margin-bottom: 5rem;
+}
+.coll-ttl-full {
+  font-size: clamp(4rem,10vw,9rem); font-style: italic; font-weight: 400;
+  line-height: .88; color: var(--pitch);
+}
+.coll-ttl-full .stag { color: var(--blood); font-size: .38em; font-style: normal; vertical-align: super; letter-spacing: .1em; }
+.coll-info { max-width: 280px; text-align: right; }
+.coll-info p { font-size: .95rem; line-height: 1.75; color: var(--earth); opacity: .68; font-style: italic; }
+.coll-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2.5rem; }
+.ci { cursor: none; }
+.ci-img { width: 100%; aspect-ratio: 3/4; background: var(--dust); opacity: .22; margin-bottom: 1.2rem; border-radius: 2px; transition: opacity .4s; }
+.ci:hover .ci-img { opacity: .35; }
+.ci-name { font-size: 1.1rem; font-style: italic; color: var(--pitch); margin-bottom: .3rem; }
+.ci-info { font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--pitch); opacity: .28; }
+
+/* ══ CONTACT ═══════════════════════════════════════════════════ */
+
+.contact-page {
+  background: var(--pitch); min-height: 100vh; padding: 9rem 2.8rem 6rem;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8rem; align-items: start;
+}
+.contact-word { font-size: clamp(4rem,9vw,8rem); font-style: italic; font-weight: 400; color: var(--bone); line-height: .9; margin-bottom: 3rem; }
+.contact-word .period { color: var(--gold); }
+.contact-intro { font-size: 1rem; line-height: 1.8; color: var(--bone); opacity: .42; font-style: italic; }
+.contact-col-lbl { font-size: .65rem; letter-spacing: .18em; text-transform: uppercase; color: var(--bone); opacity: .22; display: block; margin-bottom: 1.5rem; }
+.contact-links { list-style: none; margin-bottom: 3.5rem; }
+.contact-links li { margin-bottom: .8rem; }
+.contact-links a { font-size: 1.05rem; font-style: italic; color: var(--bone); opacity: .52; text-decoration: none; transition: opacity .2s; cursor: none; }
+.contact-links a:hover { opacity: 1; }
+
+/* FOOTER */
+footer { background: var(--pitch); padding: 4rem 2.8rem 2.5rem; border-top: .5px solid rgba(242,237,227,.07); }
+footer.light { background: var(--bone); border-top: .5px solid rgba(26,25,23,.1); }
+.foot-inner { display: flex; justify-content: space-between; align-items: center; }
+.foot-logo { font-size: 1.2rem; font-style: italic; color: var(--bone); opacity: .65; }
+.foot-logo .period { color: var(--gold); opacity: 1; }
+footer.light .foot-logo { color: var(--pitch); }
+.foot-founding { font-size: .78rem; font-style: italic; color: var(--bone); opacity: .18; text-align: center; }
+footer.light .foot-founding { color: var(--pitch); }
+.foot-legal { font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; color: var(--bone); opacity: .15; }
+footer.light .foot-legal { color: var(--pitch); }
+
+/* ANIMS */
+@keyframes fadeUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
+@keyframes scaleX { from { transform:scaleX(0); opacity:0; } to { transform:scaleX(1); opacity:1; } }
+@keyframes marquee { from { transform:translateX(0); } to { transform:translateX(-33.333%); } }
+@keyframes scrollDrop { 0%,100% { opacity:.08; transform:scaleY(.3) translateY(-10px); } 50% { opacity:.3; transform:scaleY(1) translateY(0); } }
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.4; } }
+
+/* RESPONSIVE */
+@media (max-width:900px) {
+  .name-section, .kudzu-section, .about-grid, .contact-page { grid-template-columns:1fr; gap:3rem; }
+  .pillars-grid { grid-template-columns:1fr 1fr; gap:2.5rem; }
+  .pillar { border-right:none; padding-right:0; }
+  .cities { grid-template-columns:1fr; }
+  .city { border-right:none; border-bottom:.5px solid rgba(242,237,227,.08); }
+  .pieces-grid { grid-template-columns:repeat(2,1fr); }
+  .coll-grid { grid-template-columns:repeat(2,1fr); }
+  .coll-intro { flex-direction:column; align-items:flex-start; gap:2rem; }
+  .coll-info { text-align:left; max-width:100%; }
+  .foot-inner { flex-direction:column; gap:1.5rem; text-align:center; }
+  nav { padding:1.2rem 1.5rem; }
+  .nav-links { gap:1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="rng"></div>
+
+<nav id="nav">
+  <a class="nav-logo" id="nlogo" href="#" onclick="go('home');return false;">Mande<span class="period">.</span></a>
+  <ul class="nav-links" id="nlinks">
+    <li><a href="#" onclick="go('home');return false;" data-p="home" class="cur">Home</a></li>
+    <li><a href="#" onclick="go('about');return false;" data-p="about">About</a></li>
+    <li><a href="#" onclick="go('coll');return false;" data-p="coll">SS26</a></li>
+    <li><a href="#" onclick="go('contact');return false;" data-p="contact">Contact</a></li>
+  </ul>
+  <span class="nav-season" id="nseas">SS26</span>
+</nav>
+
+<!-- ══ HOME ══════════════════════════════════════════════════ -->
+<div class="page active" id="page-home">
+
+  <section class="hero">
+    <div class="hero-inner">
+      <span class="hero-correction">di mande &nbsp;·&nbsp; no digas qué</span>
+      <h1 class="hero-wordmark">Mande<span class="period">.</span></h1>
+      <div class="hero-rule"></div>
+      <div class="hero-scroll">
+        <span>Scroll</span>
+        <div class="scroll-line"></div>
+      </div>
+    </div>
+    <div class="hero-foot">
+      <span class="hero-foot-l">Est. MMXXVI</span>
+      <span class="hero-foot-r">hecho con las manos de alguien que no debía.</span>
+    </div>
+  </section>
+
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span class="mt">Mande<span class="ms">·</span>No digas qué<span class="ms">·</span>SS26<span class="ms">·</span>Est. MMXXVI<span class="ms">·</span>Atlanta &amp; México<span class="ms">·</span>Unisex by default<span class="ms">·</span>Craft over trend<span class="ms">·</span>Now available<span class="ms">·</span></span>
+      <span class="mt" aria-hidden="true">Mande<span class="ms">·</span>No digas qué<span class="ms">·</span>SS26<span class="ms">·</span>Est. MMXXVI<span class="ms">·</span>Atlanta &amp; México<span class="ms">·</span>Unisex by default<span class="ms">·</span>Craft over trend<span class="ms">·</span>Now available<span class="ms">·</span></span>
+      <span class="mt" aria-hidden="true">Mande<span class="ms">·</span>No digas qué<span class="ms">·</span>SS26<span class="ms">·</span>Est. MMXXVI<span class="ms">·</span>Atlanta &amp; México<span class="ms">·</span>Unisex by default<span class="ms">·</span>Craft over trend<span class="ms">·</span>Now available<span class="ms">·</span></span>
+    </div>
+  </div>
+
+  <section class="name-section reveal">
+    <div>
+      <div class="name-word">Mande<span class="period">.</span></div>
+      <div class="name-phonetic">[mahn · deh] &nbsp;·&nbsp; Mexican Spanish</div>
+    </div>
+    <div>
+      <p class="name-body">A word taught to diaspora children in place of <em>"what?"</em> — a correction passed from parents, a mark of where you come from. Its origins are colonial, derived from the verb to command, once used to signal submission to a ruling class. Over generations it was reclaimed into something warmer. Something that signals not obedience but <em>presence</em>. The brand carries the same logic.</p>
+      <div class="name-foot">no digas qué &nbsp;·&nbsp; di mande</div>
+    </div>
+  </section>
+
+  <section class="coll-preview">
+    <div class="sec-hdr reveal">
+      <h2 class="sec-ttl">SS<span class="tag">26</span></h2>
+      <span class="sec-meta">Spring · Summer 2026 · First Collection</span>
+    </div>
+    <div class="pieces-grid reveal">
+      <div class="piece"><span class="piece-num">No. 001</span><div class="piece-img"></div><div class="piece-name">The Shirt</div><div class="piece-detail">Charro collar · Gold embroidery</div></div>
+      <div class="piece"><span class="piece-num">No. 002</span><div class="piece-img"></div><div class="piece-name">The Trouser</div><div class="piece-detail">Wide leg · Raw hem</div></div>
+      <div class="piece"><span class="piece-num">No. 003</span><div class="piece-img"></div><div class="piece-name">The Jacket</div><div class="piece-detail">Embroidered back · Talavera detail</div></div>
+      <div class="piece"><span class="piece-num">No. 004</span><div class="piece-img"></div><div class="piece-name">The Tee</div><div class="piece-detail">Sacred heart · Screen printed</div></div>
+      <div class="piece"><span class="piece-num">No. 005</span><div class="piece-img"></div><div class="piece-name">The Denim</div><div class="piece-detail">Patched · Fringed · Raw</div></div>
+    </div>
+    <div class="view-all-row reveal">
+      <a class="view-all" href="#" onclick="go('coll');return false;">View full collection →</a>
+    </div>
+  </section>
+
+  <div class="di-section">
+    <div class="di-bg">MANDE</div>
+    <div class="di-inner reveal">
+      <span class="di-word">di</span>
+      <div class="di-main">Mande</div>
+      <div class="di-rule"></div>
+      <span class="di-est">Est. MMXXVI</span>
+    </div>
+  </div>
+
+  <section class="kudzu-section">
+    <div class="reveal">
+      <h2 class="kudzu-hl">It grows where it is not expected.</h2>
+    </div>
+    <div class="reveal">
+      <div class="kudzu-body">
+        <p>Kudzu is a plant brought from Japan to the American South. It spread everywhere, took over the landscape, became inseparable from the identity of the place.</p>
+        <p>That is the immigrant story. That is the diaspora story.</p>
+        <p>It grows over everything but it does not destroy. It transforms. The brand carries the same instinct.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="palette-strip">
+    <div class="pc" style="background:#F2EDE3;"><span class="pc-lbl" style="color:#1A1917;">Bone</span></div>
+    <div class="pc" style="background:#C9BFB0;"><span class="pc-lbl" style="color:#1A1917;">Dust</span></div>
+    <div class="pc" style="background:#3D3830;"><span class="pc-lbl" style="color:#F2EDE3;">Earth</span></div>
+    <div class="pc" style="background:#1A1917;"><span class="pc-lbl" style="color:#F2EDE3;">Pitch</span></div>
+    <div class="pc" style="background:#5A6880;"><span class="pc-lbl" style="color:#F2EDE3;">Denim</span></div>
+    <div class="pc" style="background:#5C7A4A;"><span class="pc-lbl" style="color:#F2EDE3;">Kudzu</span></div>
+    <div class="pc" style="background:#B8000F;"><span class="pc-lbl" style="color:#F2EDE3;">Blood</span></div>
+    <div class="pc" style="background:#C4932A;"><span class="pc-lbl" style="color:#1A1917;">Gold</span></div>
+    <div class="pc" style="background:#7B3FA0;"><span class="pc-lbl" style="color:#F2EDE3;">Violet</span></div>
+    <div class="pc" style="background:#1B4D8A;"><span class="pc-lbl" style="color:#F2EDE3;">Talavera</span></div>
+  </div>
+
+  <div class="statement-band">
+    <p>Precision in the tailoring. Weight in the embroidery. Two heritages in the same garment, and neither one apologizing for the other.</p>
+    <div class="stmt-rule"></div>
+  </div>
+
+  <footer class="light">
+    <div class="foot-inner">
+      <span class="foot-logo">Mande<span class="period">.</span></span>
+      <span class="foot-founding">hecho con las manos de alguien que no debía.</span>
+      <span class="foot-legal">© Mande MMXXVI</span>
+    </div>
+  </footer>
+
+</div>
+
+<!-- ══ ABOUT ═════════════════════════════════════════════════ -->
+<div class="page" id="page-about">
+
+  <div class="about-wrap">
+    <span class="about-lbl reveal">Atlanta &amp; México · Est. MMXXVI</span>
+    <h2 class="about-hl reveal">Two inheritances. One city. Everything made by hand.</h2>
+    <div class="about-grid">
+      <div class="about-col reveal">
+        <p>Mande is a clothing brand from Atlanta, Georgia. Built at the intersection of Mexican charro tradition and the visual language of the American South — not as a concept but as a lived reality. The garments exist because both worlds do, and because they have more to say together than apart.</p>
+        <p>The clothes carry it. Precision tailoring alongside heavy embroidery. Basics built to last. Denim that holds the marks of its own making. Lace placed where it surprises. Each piece starts on a neutral ground so that when the color arrives, the gold thread or the deep red or the kudzu green, it has earned its place.</p>
+      </div>
+      <div class="about-col reveal">
+        <p>The brand was founded by a queer first-generation Mexican-American raised in Gwinnett County, inside a community that was simultaneously Mexican, Latin, and Black. Growing up between those worlds develops a particular kind of eye. You see what belongs together before anyone says it does.</p>
+        <p>The collection is unisex by default. Menswear and womenswear exist when the work calls for it. The brand does not sort people before they have had a chance to try something on.</p>
+      </div>
+      <div class="about-pull reveal">
+        <p>Like kudzu — brought from somewhere else, spread across Georgia, woven so deeply into the landscape that now it simply is Atlanta — Mande is about what grows when you stop asking permission.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cities">
+    <div class="city reveal"><span class="city-name">México</span><span class="city-role">Where it comes from</span></div>
+    <div class="city reveal"><span class="city-name">Atlanta</span><span class="city-role">Where it grew up</span></div>
+    <div class="city reveal"><span class="city-name">Roma</span><span class="city-role">Where it became possible</span></div>
+  </div>
+
+  <section class="pillars-section">
+    <div class="pillars-top reveal">
+      <span class="pillars-lbl">What the brand is built on</span>
+    </div>
+    <div class="pillars-grid reveal">
+      <div class="pillar">
+        <span class="pillar-word">Raw</span>
+        <p class="pillar-desc">The seam that shows its own stitching. The fabric that keeps the memory of being worked. Nothing in the collection pretends to have arrived without effort. That effort is the design.</p>
+      </div>
+      <div class="pillar">
+        <span class="pillar-word">Cultural</span>
+        <p class="pillar-desc">Both inheritances in every piece, with equal weight. Not surface reference but structural logic — the silhouette from one tradition, the ornament from another, neither explaining the other.</p>
+      </div>
+      <div class="pillar">
+        <span class="pillar-word">Basic</span>
+        <p class="pillar-desc">The shirt. The trouser. The jacket. Forms so foundational they become invisible — which is precisely what allows everything else to be heard. The basic earns its place by getting out of the way.</p>
+      </div>
+      <div class="pillar">
+        <span class="pillar-word">Chic</span>
+        <p class="pillar-desc">Quality that needs no announcement. The restraint that only comes from knowing exactly what something is. The luxury of not needing to prove it.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="giving-quiet reveal">
+    <p>A portion of every collection goes back — to the communities the brand comes from, to the crafts it draws from, to the people who made the work possible. This is not a campaign. It is a structure.</p>
+  </div>
+
+  <footer>
+    <div class="foot-inner">
+      <span class="foot-logo">Mande<span class="period">.</span></span>
+      <span class="foot-founding">hecho con las manos de alguien que no debía.</span>
+      <span class="foot-legal">© Mande MMXXVI</span>
+    </div>
+  </footer>
+
+</div>
+
+<!-- ══ COLLECTION ════════════════════════════════════════════ -->
+<div class="page" id="page-coll">
+
+  <div class="coll-page">
+    <div class="coll-intro reveal">
+      <h2 class="coll-ttl-full">SS<span class="stag">26</span></h2>
+      <div class="coll-info">
+        <p>Spring Summer 2026. The first collection. Every piece numbered. Every garment carrying the weight of two craft traditions and one city that has always known how to hold contradictions together.</p>
+      </div>
+    </div>
+    <div class="coll-grid reveal">
+      <div class="ci"><div class="ci-img"></div><div class="ci-name">The Shirt, No. 001</div><div class="ci-info">Bone · Charro collar · Gold embroidery on placket</div></div>
+      <div class="ci"><div class="ci-img"></div><div class="ci-name">The Trouser, No. 002</div><div class="ci-info">Pitch · Wide leg · Raw hem · Silver side seam</div></div>
+      <div class="ci"><div class="ci-img"></div><div class="ci-name">The Jacket, No. 003</div><div class="ci-info">Earth · Embroidered back · Talavera blue detail</div></div>
+      <div class="ci"><div class="ci-img"></div><div class="ci-name">The Tee, No. 004</div><div class="ci-info">Bone · Sacred heart graphic · Screen printed</div></div>
+      <div class="ci"><div class="ci-img"></div><div class="ci-name">The Denim, No. 005</div><div class="ci-info">Denim · Patched · Fringed ankle · Embroidered pocket</div></div>
+      <div class="ci"><div class="ci-img"></div><div class="ci-name">The Shirt II, No. 006</div><div class="ci-info">Kudzu · Oversized · Violet beading at collar</div></div>
+      <div class="ci"><div class="ci-img"></div><div class="ci-name">The Coat, No. 007</div><div class="ci-info">Pitch · Structured shoulder · Magenta lining</div></div>
+      <div class="ci"><div class="ci-img"></div><div class="ci-name">The Tee II, No. 008</div><div class="ci-info">Pitch · Di Mande graphic · EB Garamond italic</div></div>
+      <div class="ci"><div class="ci-img"></div><div class="ci-name">The Trouser II, No. 009</div><div class="ci-info">Earth · High waist · Ivory lace hem detail</div></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="foot-inner">
+      <span class="foot-logo">Mande<span class="period">.</span></span>
+      <span class="foot-founding">hecho con las manos de alguien que no debía.</span>
+      <span class="foot-legal">© Mande MMXXVI</span>
+    </div>
+  </footer>
+
+</div>
+
+<!-- ══ CONTACT ════════════════════════════════════════════════ -->
+<div class="page" id="page-contact">
+
+  <div class="contact-page">
+    <div>
+      <div class="contact-word">Mande<span class="period">.</span></div>
+      <p class="contact-intro">For press, wholesale, and general inquiries. Based in Atlanta. Production inquiries and stockist requests are welcome.</p>
+    </div>
+    <div>
+      <span class="contact-col-lbl">General</span>
+      <ul class="contact-links">
+        <li><a href="#">hello@mande.world</a></li>
+        <li><a href="#">Instagram</a></li>
+      </ul>
+      <span class="contact-col-lbl">Trade</span>
+      <ul class="contact-links">
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Wholesale</a></li>
+        <li><a href="#">Stockists</a></li>
+      </ul>
+      <span class="contact-col-lbl">Brand</span>
+      <ul class="contact-links">
+        <li><a href="#" onclick="go('about');return false;">About Mande</a></li>
+        <li><a href="#" onclick="go('coll');return false;">SS26</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    <div class="foot-inner">
+      <span class="foot-logo">Mande<span class="period">.</span></span>
+      <span class="foot-founding">hecho con las manos de alguien que no debía.</span>
+      <span class="foot-legal">© Mande MMXXVI</span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+// CURSOR
+const cur = document.getElementById('cur');
+const rng = document.getElementById('rng');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
+(function tick(){ rx+=(mx-rx)*.12; ry+=(my-ry)*.12; rng.style.left=rx+'px'; rng.style.top=ry+'px'; requestAnimationFrame(tick); })();
+document.querySelectorAll('a,button,.piece,.pillar,.city,.ci,.pc').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cur.classList.add('grow'));
+  el.addEventListener('mouseleave',()=>cur.classList.remove('grow'));
+});
+
+// ROUTING
+let page = 'home';
+const darkBg = ['contact'];
+
+function go(id) {
+  if (id===page) return;
+  document.getElementById('page-'+page).classList.remove('active');
+  const next = document.getElementById('page-'+id);
+  next.classList.add('active');
+  page = id;
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  const inv = darkBg.includes(id);
+  document.getElementById('nlogo').classList.toggle('inv',inv);
+  document.getElementById('nlinks').classList.toggle('inv',inv);
+  document.getElementById('nseas').classList.toggle('inv',inv);
+
+  document.querySelectorAll('[data-p]').forEach(a=>{
+    a.classList.toggle('cur', a.dataset.p===id);
+  });
+
+  setTimeout(initReveals, 120);
+}
+
+// SCROLL REVEAL
+function initReveals() {
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach((e,i)=>{
+      if (e.isIntersecting) setTimeout(()=>e.target.classList.add('vis'), i*70);
+    });
+  }, { threshold:.08, rootMargin:'0px 0px -50px 0px' });
+  document.querySelectorAll('#page-'+page+' .reveal:not(.vis)').forEach(el=>obs.observe(el));
+}
+initReveals();
+
+// NAV COLOR on HOME dark sections
+const nlogo=document.getElementById('nlogo');
+const nlinks=document.getElementById('nlinks');
+const nseas=document.getElementById('nseas');
+window.addEventListener('scroll',()=>{
+  if (page!=='home') return;
+  const dark=['name-section','di-section','kudzu-section','marquee-wrap'];
+  let over=false;
+  dark.forEach(cls=>{
+    const el=document.querySelector('.'+cls);
+    if (!el) return;
+    const r=el.getBoundingClientRect();
+    if (r.top<72 && r.bottom>0) over=true;
+  });
+  nlogo.classList.toggle('inv',over);
+  nlinks.classList.toggle('inv',over);
+  nseas.classList.toggle('inv',over);
+});
+
+// DI PARALLAX
+const diBg=document.querySelector('.di-bg');
+window.addEventListener('scroll',()=>{
+  if (!diBg) return;
+  const s=diBg.closest('.di-section');
+  if (!s) return;
+  const r=s.getBoundingClientRect();
+  diBg.style.transform=`translateX(${(-r.top/window.innerHeight)*50}px)`;
+});
+</script>
+</body>
+</html>
